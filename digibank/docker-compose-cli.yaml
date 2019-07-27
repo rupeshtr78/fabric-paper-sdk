@@ -1,0 +1,43 @@
+version: '2'
+
+networks:
+  basic:
+  
+services:
+
+    
+  cli.peer0.dbnk:
+    container_name: cli.peer0.dbnk
+    image: hyperledger/fabric-tools
+    tty: true
+    stdin_open: true
+    environment:
+      - TZ=America/Chicago
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli.peer0.dbnk
+      - CORE_PEER_ADDRESS=peer0.DigiBank.com:17051
+      - CORE_PEER_LOCALMSPID=DigiBankMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/DigiBank.com/peers/peer0.DigiBank.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/DigiBank.com/peers/peer0.DigiBank.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/DigiBank.com/peers/peer0.DigiBank.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/DigiBank.com/users/Admin@DigiBank.com/msp
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../chaincode/:/opt/gopath/src/github.com/chaincode        
+        - ../commercial-paper/organization/digibank:/opt/gopath/src/github.com/digibank
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./config:/opt/gopath/src/github.com/hyperledger/fabric/peer/config
+        - ../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ../magnetocorp/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/magnetocorp
+        - ../config:/opt/gopath/src/github.com/hyperledger/fabric/peer/config/mc
+    # depends_on:
+      # - orderer.com
+      # - peer0.MagnetoCorp.com
+      # - peer0.DigiBank.com
+    networks:
+      - basic

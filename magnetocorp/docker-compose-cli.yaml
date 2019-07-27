@@ -1,0 +1,40 @@
+version: '2'
+
+networks:
+  basic:
+  
+services:
+
+  cli.peer0.mgc:
+    container_name: cli.peer0.mgc
+    image: hyperledger/fabric-tools
+    tty: true
+    stdin_open: true
+    environment:
+      - TZ=America/Chicago    
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli.peer0.mgc
+      - CORE_PEER_ADDRESS=peer0.MagnetoCorp.com:7051
+      - CORE_PEER_LOCALMSPID=MagnetoCorpMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/MagnetoCorp.com/peers/peer0.MagnetoCorp.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/MagnetoCorp.com/peers/peer0.MagnetoCorp.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/MagnetoCorp.com/peers/peer0.MagnetoCorp.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/MagnetoCorp.com/users/Admin@MagnetoCorp.com/msp
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../chaincode/:/opt/gopath/src/github.com/chaincode        
+        - ../commercial-paper/organization/magnetocorp:/opt/gopath/src/github.com/magnetocorp
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./config:/opt/gopath/src/github.com/hyperledger/fabric/peer/config
+        - ../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+    # depends_on:
+      # - orderer.com
+      # - peer0.MagnetoCorp.com
+      # - peer0.DigiBank.com
+    networks:
+      - basic

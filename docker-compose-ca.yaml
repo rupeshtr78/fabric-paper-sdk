@@ -1,0 +1,55 @@
+version: '2'
+
+# volumes:
+  # orderer.DigiBank.com:
+  # orderer.MagnetoCorp.com:
+  # peer0.MagnetoCorp.com:
+  # peer1.MagnetoCorp.com:
+  # peer2.MagnetoCorp.com:
+  # peer0.DigiBank.com:
+  # peer1.DigiBank.com:
+
+networks:
+  basic:
+
+services:
+
+  ca-MagnetoCorp.com:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - TZ=America/Chicago
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-MagnetoCorp.com
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.MagnetoCorp.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
+      - FABRIC_CA_SERVER_PORT=7054
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.MagnetoCorp.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/key.pem -b admin:adminpw -d'
+    volumes:
+      - ./magnetocorp/crypto-config/peerOrganizations/MagnetoCorp.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./magnetocorp/fabric-ca-server/ca-MagnetoCorp.com:/etc/hyperledger/fabric-ca-server
+    container_name: ca-MagnetoCorp.com
+    networks:
+      - basic
+
+  ca-DigiBank.com:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - TZ=America/Chicago
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-DigiBank.com
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.DigiBank.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
+      - FABRIC_CA_SERVER_PORT=8054
+    ports:
+      - "8054:8054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.DigiBank.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/key.pem -b admin:adminpw -d'
+    volumes:
+      - ./digibank/crypto-config/peerOrganizations/DigiBank.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./digibank/fabric-ca-server/ca-DigiBank:/etc/hyperledger/fabric-ca-server
+    container_name: ca-DigiBank.com
+    networks:
+      - basic

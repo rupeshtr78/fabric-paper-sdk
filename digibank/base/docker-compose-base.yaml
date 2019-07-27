@@ -1,0 +1,155 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  orderer.DigiBank.com:
+    container_name: orderer.DigiBank.com
+    extends:
+      file: peer-base.yaml
+      service: orderer-base
+    volumes:
+        - ../config/digibank.genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../crypto-config/ordererOrganizations/DigiBank.com/orderers/orderer.DigiBank.com/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/ordererOrganizations/DigiBank.com/orderers/orderer.DigiBank.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.DigiBank.com:/var/hyperledger/production/orderer
+    ports:
+      - 7055:7050
+      
+  orderer.MagnetoCorp.com:
+    container_name: orderer.MagnetoCorp.com
+    extends:
+      file: peer-base.yaml
+      service: orderer-base
+    volumes:
+        - ../config/magneto.genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../crypto-config/ordererOrganizations/MagnetoCorp.com/orderers/orderer.MagnetoCorp.com/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/ordererOrganizations/MagnetoCorp.com/orderers/orderer.MagnetoCorp.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.MagnetoCorp.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+      
+  peer0.MagnetoCorp.com:
+    container_name: peer0.MagnetoCorp.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.MagnetoCorp.com
+      - CORE_PEER_ADDRESS=peer0.MagnetoCorp.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.MagnetoCorp.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.MagnetoCorp.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.MagnetoCorp.com:7051
+      - CORE_PEER_LOCALMSPID=MagnetoCorpMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb-peer0-mgc:5984
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/MagnetoCorp.com/peers/peer0.MagnetoCorp.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/MagnetoCorp.com/peers/peer0.MagnetoCorp.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.MagnetoCorp.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+
+  peer1.MagnetoCorp.com:
+    container_name: peer1.MagnetoCorp.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.MagnetoCorp.com
+      - CORE_PEER_ADDRESS=peer1.MagnetoCorp.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.MagnetoCorp.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.MagnetoCorp.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.MagnetoCorp.com:8051
+      - CORE_PEER_LOCALMSPID=MagnetoCorpMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb-peer1-mgc:5984
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/MagnetoCorp.com/peers/peer1.MagnetoCorp.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/MagnetoCorp.com/peers/peer1.MagnetoCorp.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.MagnetoCorp.com:/var/hyperledger/production
+    ports:
+      - 8051:8051
+      
+  peer2.MagnetoCorp.com:
+    container_name: peer2.MagnetoCorp.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer2.MagnetoCorp.com
+      - CORE_PEER_ADDRESS=peer2.MagnetoCorp.com:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer2.MagnetoCorp.com:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.MagnetoCorp.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.MagnetoCorp.com:9051
+      - CORE_PEER_LOCALMSPID=MagnetoCorpMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb-peer2-mgc:5984
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/MagnetoCorp.com/peers/peer2.MagnetoCorp.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/MagnetoCorp.com/peers/peer2.MagnetoCorp.com/tls:/etc/hyperledger/fabric/tls
+        - peer2.MagnetoCorp.com:/var/hyperledger/production
+    ports:
+      - 9051:9051
+
+  peer0.DigiBank.com:
+    container_name: peer0.DigiBank.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.DigiBank.com
+      - CORE_PEER_ADDRESS=peer0.DigiBank.com:17051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:17051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.DigiBank.com:17052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:17052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.DigiBank.com:18051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.DigiBank.com:17051
+      - CORE_PEER_LOCALMSPID=DigiBankMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb-peer0-digi:5984
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/DigiBank.com/peers/peer0.DigiBank.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/DigiBank.com/peers/peer0.DigiBank.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.DigiBank.com:/var/hyperledger/production
+    ports:
+      - 17051:17051
+ 
+  peer1.DigiBank.com:
+    container_name: peer1.DigiBank.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.DigiBank.com
+      - CORE_PEER_ADDRESS=peer1.DigiBank.com:18051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:18051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.DigiBank.com:18052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:18052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.DigiBank.com:17051      
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.DigiBank.com:18051
+      - CORE_PEER_LOCALMSPID=DigiBankMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb-peer1-digi:5984
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/DigiBank.com/peers/peer1.DigiBank.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/DigiBank.com/peers/peer1.DigiBank.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.DigiBank.com:/var/hyperledger/production
+    ports:
+      - 18051:18051
+

@@ -1,0 +1,95 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.MagnetoCorp.com:
+  peer0.MagnetoCorp.com:
+  peer1.MagnetoCorp.com:
+  peer2.MagnetoCorp.com:
+
+networks:
+  basic:
+
+services:
+
+  orderer.MagnetoCorp.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.MagnetoCorp.com
+    container_name: orderer.MagnetoCorp.com
+    networks:
+      - basic
+  
+#peer0 mgc  
+  couchdb-peer0-mgc:
+    container_name: couchdb-peer0-mgc
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "5984:5984"
+    networks:
+      - basic
+   
+      
+  peer0.MagnetoCorp.com:
+    container_name: peer0.MagnetoCorp.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.MagnetoCorp.com
+    networks:
+      - basic
+    depends_on:
+      - couchdb-peer0-mgc
+      
+#peer1 mgc  
+  couchdb-peer1-mgc:
+    container_name: couchdb-peer1-mgc
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "6984:5984"
+    networks:
+      - basic
+   
+      
+  peer1.MagnetoCorp.com:
+    container_name: peer1.MagnetoCorp.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.MagnetoCorp.com
+    networks:
+      - basic
+    depends_on:
+      - couchdb-peer1-mgc
+      
+#peer2 mgc  
+  couchdb-peer2-mgc:
+    container_name: couchdb-peer2-mgc
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "7984:5984"
+    networks:
+      - basic
+   
+      
+  peer2.MagnetoCorp.com:
+    container_name: peer2.MagnetoCorp.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer2.MagnetoCorp.com
+    networks:
+      - basic
+    depends_on:
+      - couchdb-peer2-mgc
+ 

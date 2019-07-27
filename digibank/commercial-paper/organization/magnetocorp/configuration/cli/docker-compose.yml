@@ -1,0 +1,39 @@
+#
+# Copyright IBM Corp All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+version: '2'
+
+networks:
+  basic:
+    external:
+      name: net_basic
+
+services:
+  cliMagnetoCorp:
+    container_name: cliMagnetoCorp
+    image: hyperledger/fabric-tools
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=info
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.MagnetoCorp.papernet.com:7051
+      - CORE_PEER_LOCALMSPID=MagnetoCorpMSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/MagnetoCorp.papernet.com/users/Admin@MagnetoCorp.papernet.com/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../../../../organization/magnetocorp:/opt/gopath/src/github.com/
+        - ./../../../../../../fabric-paper/config:/opt/gopath/src/github.com/hyperledger/fabric/peer/config/
+        - ./../../../../../../fabric-paper/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+    networks:
+        - basic
+    #depends_on:
+    #  - orderer.papernet.com
+    #  - peer0.MagnetoCorp.papernet.com
+    #  - couchdb

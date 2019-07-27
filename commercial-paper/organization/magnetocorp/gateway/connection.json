@@ -1,0 +1,101 @@
+{
+    "name": "fabric-peer",
+    "version": "1.0.0",
+    "client": {
+        "organization": "MagnetoCorp",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+    "channels": {
+        "bondchannel": {
+            "orderers": [
+                "orderer.MagnetoCorp.com"
+            ],
+            "peers": {
+                "peer0.MagnetoCorp.com": {}
+            }
+        }
+    },
+    "organizations": {
+        "MagnetoCorp": {
+            "mspid": "MagnetoCorpMSP",
+            "peers": [
+                "peer0.MagnetoCorp.com"
+            ],
+            "certificateAuthorities": [
+                "ca-MagnetoCorp"
+            ]
+        },
+        "DigiBank": {
+            "mspid": "DigiBankMSP",
+            "peers": [
+                "peer0.DigiBank.com"
+            ],
+            "certificateAuthorities": [
+                "ca-DigiBank"
+            ]
+        }
+    },
+    "orderers": {
+        "orderer.MagnetoCorp.com": {
+            "url": "grpcs://localhost:7050"
+        }
+    },
+    "peers": {
+        "peer0.MagnetoCorp.com": {
+            "url": "grpcs://localhost:7051",
+            "tlsCACerts": {
+                "path": "/home/hyper/fabric/rtrfabs/fabric-paper/crypto-config/peerOrganizations/MagnetoCorp.com/tlsca/tlsca.MagnetoCorp.com-cert.pem"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.MagnetoCorp.com"
+            }
+        },
+        "peer0.DigiBank.com": {
+            "url": "grpcs://localhost:7051",
+            "tlsCACerts": {
+                "path": "/home/hyper/fabric/rtrfabs/fabric-paper/crypto-config/peerOrganizations/DigiBank.com/tlsca/tlsca.DigiBank.com-cert.pem"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.DigiBank.com"
+            }
+        }
+        
+    },
+    "certificateAuthorities": {
+        "ca-MagnetoCorp": {
+            "url": "https://localhost:7054",
+            "caName": "ca-MagnetoCorp",
+            "tlsCACerts": {
+                "path": "/home/hyper/fabric/rtrfabs/fabric-paper/crypto-config/peerOrganizations/MagnetoCorp.com/tlsca/tlsca.MagnetoCorp.com-cert.pem"
+            },
+            "httpOptions": {
+                "verify": false
+            },
+		    "registrar": {
+				"enrollId": "admin" ,
+				"enrollSecret": "adminpw"
+			}
+        },
+        "ca-DigiBank": {
+            "url": "https://localhost:7054",
+            "caName": "ca-DigiBank",
+            "tlsCACerts": {
+                "path": "/home/hyper/fabric/rtrfabs/fabric-paper/crypto-config/peerOrganizations/DigiBank.com/tlsca/tlsca.DigiBank.com-cert.pem"
+            },
+            "httpOptions": {
+                "verify": false
+            },
+		    "registrar": {
+				"enrollId": "admin" ,
+				"enrollSecret": "adminpw"
+			}
+        }
+    }
+}

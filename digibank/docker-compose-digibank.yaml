@@ -1,0 +1,70 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.DigiBank.com:
+  peer0.DigiBank.com:
+  peer1.DigiBank.com:
+
+networks:
+  basic:
+
+services:
+
+
+  orderer.DigiBank.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.DigiBank.com
+    container_name: orderer.DigiBank.com
+    networks:
+      - basic
+
+
+#peer0 digi
+  couchdb-peer0-digi:
+    container_name: couchdb-peer0-digi
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "8984:5984"
+    networks:
+      - basic
+
+  peer0.DigiBank.com:
+    container_name: peer0.DigiBank.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.DigiBank.com
+    networks:
+      - basic
+    depends_on:
+      - couchdb-peer0-digi
+      
+#peer1 digi
+  couchdb-peer1-digi:
+    container_name: couchdb-peer1-digi
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "9984:5984"
+    networks:
+      - basic
+
+  peer1.DigiBank.com:
+    container_name: peer1.DigiBank.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.DigiBank.com
+    networks:
+      - basic
+    depends_on:
+      - couchdb-peer1-digi
