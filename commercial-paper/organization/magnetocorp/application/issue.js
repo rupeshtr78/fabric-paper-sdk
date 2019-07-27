@@ -62,7 +62,7 @@ async function main() {
     console.log('Use org.papernet.commercialpaper smart contract.');
 
     //const contract = await network.getContract('papercontract', 'org.papernet.commercialpaper');
-	const contract = await network.getContract('bondpaper', 'org.papernet.commercialpaper');
+	const contract = await network.getContract('papercontract', 'org.papernet.commercialpaper');
 
     // issue commercial paper
     console.log('Submit commercial paper issue transaction.');

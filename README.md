@@ -1,19 +1,17 @@
-Hyperledger Fabric Smart Contract
+# Hyperledger Fabric Smart Contract
 
 In this article we will implement the commercial paper smart contract in a network as described by this [section](https://hyperledger-fabric.readthedocs.io/en/release-1.4/developapps/gateway.html) from the user guide. A Hyperledger Fabric network channel can constantly change.  The peer, orderer and CA components, contributed by the different organizations in the network,will come and go. 
-
-Please refer the repo for the Scripts and other details of this article.>>>
 
 This article follows the commercial paper smart contract model of MagnetoCorp and DigiBank as shown below.
 
 ![](images/FABRIC_PAPER_SDK.png)
 
-In PaperNet commercial paper network. two organizations Magneto Corp and Digibank use PaperNet
+In PaperNet commercial paper network. two organizations Magneto Corp and Digibank uses PaperNet
 network to issue, buy, and redeem commercial paper. Refer the [link](https://hyperledger-fabric.readthedocs.io/en/release-1.4/developapps/scenario.html) for more details on the process.
 
 We will be deploying the Hyperledger Fabric network consisting of MagnetoCorp organization, maintaining three peer nodes, one orderer with ‘solo’  ordering service. We will create a channel papernet , add Digibank organization's two peers to the papernet channel , by following [adding org to channel](https://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html) procedure. 
 
-After the network is setup we will install commercial paper smart contract package and instantiate the contract on papernet channel. We will configure connection profiles for the network gateway to manage the network interactions for both organizations. We will invoke issue,buy and redeem paper contract. We will also register users , use the corresponding  wallet and identities of respective organizations during these transactions.
+After the network is setup we will install commercial paper smart contract package and instantiate the contract on papernet channel. We will configure connection profiles for the network gateway to manage the network interactions for both organizations. We will invoke issue,buy and redeem transactions of paper contract. We will also register users , use the corresponding  wallet and identities of respective organizations during these transactions.
 
 Lets start by creating the network config for Magnetocorp.
 
@@ -75,10 +73,12 @@ Add Digibank Peers to Channel
 
 ```bash
 #Refer Github repo for details
-docker exec -it cli.peer0.mgc bash
-
 cd config/channel
+configtxgen -printOrg DigiBankMSP > ../magnetocorp/config/channel/DigiBankMSP.json
 
+# exec into the CLI container
+docker exec -it cli.peer0.mgc bash
+cd config/channel
 # command saves the binary protobuf channel configuration block to config_block.pb
 peer channel fetch config config_block.pb -o orderer.MagnetoCorp.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
 
@@ -116,7 +116,7 @@ docker logs peer0.MagnetoCorp.com
 
 ```
 
-**Start the digibank Network**
+**Start the DigiBank Network**
 
 ```bash
 cd digibank
@@ -125,7 +125,7 @@ docker-compose -f docker-compose-digibank.yaml up -d
 docker-compose -f docker-compose-cli.yaml up -d
 ```
 
-Update anchor peers of DigiBank organization by following [update anchor peer](https://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html) procedure. 
+**Update anchor peers of DigiBank organization** by following [update anchor peer](https://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html) procedure. 
 
 ```bash
 #save the binary protobuf channel configuration block
@@ -168,7 +168,7 @@ docker logs -f peer0.org1.example.com
 **Install Paper contract**
 Install paper contract on all peer nodes in PaperNet channel . (use package method)
 
-```
+```bash
 peer chaincode package contractpack.out -n papercontract -l node -p /opt/gopath/src/github.com/magnetocorp/contract -v 1.0 -s -S
 
 peer chaincode install contractpack.out
@@ -176,16 +176,18 @@ peer chaincode install contractpack.out
 
 **Instantiate paper Contract on Papernet Channel**
 
-```
+```bash
 peer chaincode instantiate -o orderer.MagnetoCorp.com:7050 -C $CHANNEL_NAME  -n papercontract -v 1.0 -l node -c '{"Args":["org.papernet.commercialpaper:instantiate"]}' --tls --cafile $ORDERER_CA  -P  "OR ('MagnetoCorpMSP.peer','DigiBankMSP.peer')"
 
 ```
+
+**Network Connection Profile**
 
 Now Lets us issue the commercial paper contract ad Magnetocorp.
 
 Before that we need to configure the connection profile for both organizations.
 
-```
+```bash
 cd commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml
 cd commercial-paper/organization/digibank/gateway/networkConnection.yaml
 Refer Github repo for details
@@ -212,7 +214,7 @@ Perform issue transaction as bondissuer1@MagnetoCorp.com from MagnetoCorp.
 
 Below code connected to papernet channel though a gateway using the connection profile and bondissuer1 user.
 
-```
+```bash
 cd commercial-paper/organization/magnetocorp/application
 node issue.js
 ```
