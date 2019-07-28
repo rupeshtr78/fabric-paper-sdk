@@ -1,6 +1,6 @@
 # Hyperledger Fabric Smart Contract
 
-n this article we will illustrate the steps required to deploy the commercial paper smart contract in a multi org network . In this case study we explore the concepts of adding org to a channel,wallets and identities, gateway and connection profiles in a Hyperledger Fabric network channel .
+In this article we will illustrate the steps required to deploy the commercial paper smart contract in a multi org network . In this case study we explore the concepts of adding org to a channel,wallets and identities, gateway and connection profiles in a Hyperledger Fabric network channel .
 This article follows the commercial paper smart contract model of MagnetoCorp and DigiBank as shown below.
 
 ![](images/FABRIC_PAPER_SDK.png)
