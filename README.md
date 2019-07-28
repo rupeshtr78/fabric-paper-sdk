@@ -1,7 +1,6 @@
 # Hyperledger Fabric Smart Contract
 
-In this article we will implement the commercial paper smart contract in a network as described by this [section](https://hyperledger-fabric.readthedocs.io/en/release-1.4/developapps/gateway.html) from the user guide. A Hyperledger Fabric network channel can constantly change.  The peer, orderer and CA components, contributed by the different organizations in the network,will come and go. 
-
+n this article we will illustrate the steps required to deploy the commercial paper smart contract in a multi org network . In this case study we explore the concepts of adding org to a channel,wallets and identities, gateway and connection profiles in a Hyperledger Fabric network channel .
 This article follows the commercial paper smart contract model of MagnetoCorp and DigiBank as shown below.
 
 ![](images/FABRIC_PAPER_SDK.png)
